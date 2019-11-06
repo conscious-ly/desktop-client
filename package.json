@@ -1,5 +1,16 @@
 {
-  "name": "conscious.ly-desktop-client",
+  "name": "consciously-desktop-client",
+  "description": "The desktop client for the consciously app, and app that aims to cut down harmful tech usage and bring human consciousness back front and centre. Still a work in progress, basically pre-pre-alpha",
+  "author": {
+    "name": "Amir Abushanab"
+  },
+  "maintainers": [
+    {
+      "name": "Amir Abushanab",
+      "email": "amirwuzhere@hotmail.com",
+      "url": "https://github.com/amir-abushanab"
+    }
+  ],
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -25,6 +36,7 @@
     "chokidar": "^3.2.2",
     "core-js": "^3.3.2",
     "electron": "^6.0.0",
+    "electron-updater": "^4.2.0",
     "v-tooltip": "^2.0.2",
     "vue": "^2.6.10",
     "vue-circle-slider": "^1.0.2",

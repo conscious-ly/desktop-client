@@ -76,7 +76,7 @@ export default {
     },
     distractedMode(isDistracted) {
       if (isDistracted) {
-        console.log('TODO: Distraction Mode');
+        // console.log('TODO: Distraction Mode');
       }
     },
   },

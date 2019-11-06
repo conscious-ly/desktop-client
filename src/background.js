@@ -2,6 +2,7 @@
 import {
   app, protocol, BrowserWindow, ipcMain,
 } from 'electron';
+import { autoUpdater } from 'electron-updater';
 import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
 import * as chokidar from 'chokidar';
 import * as fs from 'fs';
@@ -82,6 +83,7 @@ function createWindow() {
     createProtocol('app');
     // Load the index.html when not in development
     mainWindow.loadURL('app://./index.html');
+    autoUpdater.checkForUpdatesAndNotify();
   }
 
   mainWindow.on('closed', () => {
