@@ -16,7 +16,7 @@ const routes = [
   {
     path: '/',
     name: 'home-view',
-    Home,
+    component: Home,
   },
   {
     path: DISTRACTION_PAGE_ROUTE,
