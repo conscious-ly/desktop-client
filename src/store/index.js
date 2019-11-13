@@ -20,7 +20,6 @@ import {
   SET_TASK,
   SET_TIME_REMAINING,
 } from './mutation-types';
-
 import {
   ENTER_DISTRACTED_MODE,
   NOTIFY_HALF_TIME,
@@ -36,6 +35,9 @@ import {
 } from './action-types';
 
 Vue.use(Vuex);
+
+// Change this to speed up the timer
+const speedUpTimer = true;
 
 const state = {
   aboutToBeDistracted: false,
@@ -82,7 +84,16 @@ const state = {
 
 const getters = {
   currentTaskName: state => state.currentTask.name,
-  timeLeftRatio: state => state.minutesRemainingInTask / state.currentTask.expectedTimeInMin,
+  timeLeftRatio: (state) => {
+    const timeLeftR = state.minutesRemainingInTask
+    / state.currentTask.expectedTimeInMin;
+
+    if (Number.isNaN(timeLeftR)) {
+      return 0;
+    }
+
+    return timeLeftR;
+  },
 };
 
 const mutations = {
@@ -201,7 +212,7 @@ const actions = {
     while (state.minutesRemainingInTask !== 0) {
       // Change the sleep-time to make the timer tick faster
       // recommended is 500 for testing, 60000 (i.e a minute) for production
-      const delay = process.env.NODE_ENV !== 'development' ? 60000 : 500;
+      const delay = speedUpTimer ? 500 : 60000;
       // eslint-disable-next-line no-await-in-loop
       await sleep(delay);
       commit(DECREMENT_TIMER);
@@ -221,7 +232,9 @@ const actions = {
       if (state.blockedSites.includes(tab)
         && !state.openTabs.includes(tab)) {
         newTabs.add(tab);
-        commit(SET_ABOUT_TO_BE_DISTRACTED, true);
+        if (!state.distractedMode) {
+          commit(SET_ABOUT_TO_BE_DISTRACTED, true);
+        }
       }
     });
     if (newTabs.size !== 0) {

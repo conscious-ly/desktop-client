@@ -8,13 +8,16 @@
 
 <script>
 export default {
-  name: 'Conscious.ly',
+  name: 'conscious.ly',
 };
 </script>
 
-<style>
-/* Note that SCSS is supported, simply add lang="scss" to the style tag */
-@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro");
+<style lang="scss">
+@import url("https://fonts.googleapis.com/css?family=Work+Sans");
+@import url("https://fonts.googleapis.com/css?family=Montserrat");
+
+$font-color: #444e36;
+$background-color: #f7faf4;
 
 * {
   box-sizing: border-box;
@@ -23,12 +26,14 @@ export default {
 }
 
 body {
-  font-family: "Source Sans Pro", sans-serif;
+  background-color: $background-color;
+  color: $font-color;
+  font-family: "Montserrat", sans-serif;
 }
 
 button {
-  background-color: #4fc08d;
-  border: 1px solid #4fc08d;
+  background-color: #6be371;
+  border: 1px solid #6be371;
   border-radius: 2em;
   box-sizing: border-box;
   color: #fff;
@@ -42,21 +47,26 @@ button {
 }
 
 button.alt {
-  background-color: #d80101;
-  border-color: #d80101;
+  background-color: #d0a070;
+  border-color: #d0a070;
 }
 
 button.light {
   background-color: transparent;
-  color: #42b983;
+  color: #6be371;
 }
 
+// circle {
+//   fill: #6be371;
+// }
+
 h1 {
+  font-family: "Work Sans", sans-serif;
   margin-top: 30px;
 }
 
 input {
-  color: #4fc08d;
+  color: $font-color;
   font-size: 1.2em;
   text-align: center;
 }
@@ -71,23 +81,16 @@ main > div {
 }
 
 .half-inverted {
-  filter: hue-rotate(230deg);
+  filter: hue-rotate(290deg);
 }
 
 .inverted {
-  filter: invert(100%);
+  filter: hue-rotate(90deg) invert(100%);
 }
 
 .left-side {
   display: flex;
   flex-direction: column;
-}
-
-#wrapper {
-  height: 100vh;
-  padding: 0px 80px;
-  text-align: center;
-  width: 100vw;
 }
 
 #logo {
@@ -96,6 +99,15 @@ main > div {
   margin-left: auto;
   margin-right: auto;
   max-width: 300px;
+  padding-left: 38px;
+}
+
+
+#wrapper {
+  height: 100vh;
+  padding: 0px 80px;
+  text-align: center;
+  width: 100vw;
 }
 
 /****** Animations *****/

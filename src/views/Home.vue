@@ -3,34 +3,37 @@
     <div class="top-right" @click="goToSettings()">
       <font-awesome-icon icon="cogs" size="2x"/>
     </div>
-    <img id="logo" src="~@/assets/logo.svg" alt="conscious.ly" />
+    <img id="logo" src="@/assets/logo.svg" alt="conscious.ly" />
     <h1>What would you like to do?</h1>
     <v-select
-    taggable
     label="name"
+    taggable
+    placeholder="Select or write your task here"
     :options="$store.state.taskList"
-    :value="$store.state.currentTask"
+    :value="$store.state.currentTask || null"
     @input="UPDATE_TASK">
     </v-select>
 
     &nbsp;
-
+    <br>
+    <br>
     <h1>How many minutes do you think it's going to take?</h1>
     <circle-slider
       v-model="expectedTime"
       @touchmove="$refs.input.blur()"
+      knob-color="#6be371"
+      progress-color="#6be371"
       :side="150"
       :min="0"
       :max="120"
       :step-size="1"
-      :circle-width-rel="10"
-      :progress-width-rel="10"
-      :knob-radius="10"
+      :circle-width-rel="8"
+      :knob-radius="11"
     />
     <input ref="input" type="number" v-model.number="expectedTime" />
 
     <div>
-    <button @click="startTask()">Begin</button><br><br>
+    <button @click="confirmTask">Begin</button><br><br>
     <!-- <button class="light" @click="test">TEST</button> -->
     </div>
   </div>
@@ -39,9 +42,9 @@
 <script>
 import { mapActions } from 'vuex';
 import { remote } from 'electron';
-import { START_TIMER, UPDATE_TASK } from '../store/action-types';
-import { WIDGET_PAGE_ROUTE } from '../router/routes';
-import navigationMixin from '../mixins/navigationMixin';
+import { START_TIMER, UPDATE_TASK } from '@/store/action-types';
+import { WIDGET_PAGE_ROUTE } from '@/router/routes';
+import navigationMixin from '@/mixins/navigationMixin';
 
 export default {
   name: 'HomeView',
@@ -53,6 +56,16 @@ export default {
   },
   mixins: [navigationMixin],
   methods: {
+    confirmTask() {
+      const options = {
+        buttons: ['No', 'Yes'],
+        type: 'question',
+        message: 'Ready to get started?',
+      };
+      if (remote.dialog.showMessageBoxSync(options)) {
+        this.startTask();
+      }
+    },
     startTask() {
       if (this.$store.getters.currentTaskName === 'Nothing') {
         this.w.close();

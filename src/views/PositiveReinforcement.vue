@@ -16,7 +16,7 @@ export default {
   created() {
     setTimeout(() => {
       this.$store.dispatch(UPDATE_ABOUT_TO_BE_DISTRACTED, false);
-      this.$router.push('/widget');
+      this.goToWidget();
     }, 2000);
   },
 };

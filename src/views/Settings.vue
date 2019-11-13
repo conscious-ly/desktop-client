@@ -27,15 +27,17 @@
      <input type="checkbox" id="movableWidget" v-model="isMoveable">
      <label for="movableWidget">Movable Widget (restart required)</label>
     </div>
-    <button @click="goToLanding()">Save</button>
+    <button @click="goBack()">Save</button>
     &nbsp;
     &nbsp;
   </div>
 </template>
 
 <script>
+import { ipcRenderer } from 'electron';
 import { UPDATE_BLOCKED_SITES, UPDATE_IS_MOVEABLE } from '../store/action-types';
 import navigationMixin from '../mixins/navigationMixin';
+import { COMPLETE_MODE } from '../event-types';
 
 export default {
   name: 'SettingsView',
@@ -57,6 +59,9 @@ export default {
         this.$store.dispatch(UPDATE_IS_MOVEABLE, moveable);
       },
     },
+  },
+  mounted() {
+    ipcRenderer.send(COMPLETE_MODE);
   },
 };
 </script>

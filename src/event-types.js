@@ -2,6 +2,8 @@ export const ACTIVATE = 'activate';
 
 export const ALL = 'all';
 
+export const CONFIRMATION_MODAL = 'confirmation-modal';
+
 export const CHANGE = 'change';
 
 export const CLOSE = 'close';
@@ -17,6 +19,10 @@ export const DID_FINISH_LOAD = 'did-finish-load';
 export const DISTRACTION_MODE = 'distraction-mode';
 
 export const MESSAGE = 'message';
+
+export const NOTIFICATION_TRAY_ICON = 'notification-tray-icon';
+
+export const NORMAL_TRAY_ICON = 'normal-tray-icon';
 
 export const OPEN = 'open';
 

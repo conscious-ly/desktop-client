@@ -1,10 +1,13 @@
 <template>
   <div id="wrapper">
-    <img id="logo" src="~@/assets/isolated-layout.svg" alt="conscious.ly" />
+    <img id="logo"
+    class="inverted"
+    src="~@/assets/isolated-layout.svg"
+    alt="conscious.ly" />
     <h1>You haven't completed {{ $store.state.currentTask.name || 'this task' }}!</h1>
     <br>
     <h2>Are you sure you want to be distracted?</h2>
-    <button @click="goToWidget()">No</button>
+    <button @click="goToPositiveReinforcement()">No</button>
     <br>
     <button v-if='!showQuestion' class="alt" @click="showQuestion = !showQuestion">Yes</button>
 

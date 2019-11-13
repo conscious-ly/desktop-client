@@ -1,8 +1,14 @@
 <template>
   <div id="wrapper">
-    <img id="logo" src="~@/assets/isolated-layout.svg" alt="conscious.ly" />
+    <img
+    id="logo"
+    src="~@/assets/isolated-layout.svg"
+    alt="conscious.ly" />
     <h1>Time is up!</h1>
-    <h2>Good job not getting distracted!</h2>
+    <h2>{{ $store.state.distractedMode ?
+      'You got a little sidetracked there, you\'ll get it next time!'
+      : 'Good job not getting distracted!'
+      }}</h2>
     <button @click="goToLanding()">Start New Task</button>
     <br>
     <button class="light" @click="close">Quit</button>

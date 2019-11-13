@@ -1,22 +1,56 @@
 <template>
   <main>
-    <img
-    v-tooltip="toolTipMessage()"
-    id="logo"
-    v-bind:class="widgetClassObject"
-    src="~@/assets/isolated-layout.svg" alt="conscious.ly" />
+    <div id="wrapper">
+      <Progress
+        :strokeColor="timerColor()"
+        :transitionDuration="5000"
+        :radius="55"
+        :strokeWidth="10"
+        :value="$store.getters.timeLeftRatio * 100">
+      <div class="content">
+        <img
+          id="logo"
+          :class="widgetClassObject"
+          src="~@/assets/isolated-layout.svg" alt="conscious.ly"
+        />
+      </div>
+      <template v-slot:footer>
+        <b>{{`${$store.state.minutesRemainingInTask} minutes left`}}</b>
+      </template>
+    </Progress>
+    <br>
+    <br>
+    <font-awesome-icon class="spaced-out" @click="goToLanding()" icon="stop-circle" size="2x"/>
+    <font-awesome-icon class="spaced-out" @click="startTask()" icon="redo" size="2x"/>
+    <font-awesome-icon class="spaced-out" @click="goToSettings()" icon="cogs" size="2x"/>
+  </div>
   </main>
 </template>
 
 <script>
 import { mapState } from 'vuex';
 import { ipcRenderer } from 'electron';
-import { WIDGET_MODE } from '@/event-types';
-import { NOTIFY_TIME_UP, NOTIFY_HALF_TIME } from '@/store/action-types';
-import { DISTRACTION_PAGE_ROUTE, TIME_UP_PAGE_ROUTE } from '@/router/routes';
+import Progress from 'easy-circular-progress';
+import { WIDGET_MODE, NOTIFICATION_TRAY_ICON, NORMAL_TRAY_ICON } from '@/event-types';
+import {
+  ENTER_DISTRACTED_MODE,
+  NOTIFY_TIME_UP,
+  NOTIFY_HALF_TIME,
+  START_TIMER,
+} from '@/store/action-types';
+import {
+  DISTRACTION_PAGE_ROUTE,
+  TIME_UP_PAGE_ROUTE,
+  WIDGET_PAGE_ROUTE,
+} from '@/router/routes';
+import navigationMixin from '../mixins/navigationMixin';
 
 export default {
   name: 'WidgetView',
+  mixins: [navigationMixin],
+  components: {
+    Progress,
+  },
   computed: {
     ...mapState([
       'aboutToBeDistracted',
@@ -46,13 +80,24 @@ export default {
     },
   },
   methods: {
-    toolTipMessage() {
-      if (this.$store.state.minutesRemainingInTask === 0) {
-        return 'Time is up!';
+    timerColor() {
+      if (this.$store.getters.timeLeftRatio < 0.25) {
+        return '#ff2d29';
       }
-      return `${this.$store.state.minutesRemainingInTask} minutes remaining`;
+
+      if (this.$store.getters.timeLeftRatio < 0.5) {
+        return '#d0a070';
+      }
+
+      return '#6be371';
     },
-    distracted() {},
+    startTask() {
+      if (this.$store.getters.currentTaskName === 'Nothing') {
+        this.w.close();
+      }
+      this.$store.dispatch(START_TIMER, this.$data.expectedTime);
+      this.$router.push(WIDGET_PAGE_ROUTE);
+    },
   },
   mounted() {
     ipcRenderer.send(WIDGET_MODE);
@@ -62,11 +107,13 @@ export default {
       if (newTime === 0) {
         this.$store.dispatch(NOTIFY_TIME_UP);
         this.$router.push(TIME_UP_PAGE_ROUTE);
+        ipcRenderer.send(NORMAL_TRAY_ICON);
       }
 
       if (this.$store.getters.timeLeftRatio < 0.5
       && this.$store.state.halfTimeNotifcationSent === false) {
         this.$store.dispatch(NOTIFY_HALF_TIME);
+        ipcRenderer.send(NOTIFICATION_TRAY_ICON);
       }
     },
     aboutToBeDistracted(isAboutToBeDistracted) {
@@ -76,117 +123,80 @@ export default {
     },
     distractedMode(isDistracted) {
       if (isDistracted) {
-        // console.log('TODO: Distraction Mode');
+        this.$store.dispatch(ENTER_DISTRACTED_MODE);
       }
     },
   },
 };
 </script>
 
-<style scoped>
-.tooltip {
-  display: block !important;
-  z-index: 10000;
+<style scoped lang='scss'>
+img {
+  text-align: center;
+  display: block;
 }
 
-.tooltip .tooltip-inner {
-  background: black;
-  color: white;
-  border-radius: 16px;
-  padding: 5px 10px 4px;
+#logo {
+  padding-left: 10px;
+  min-width: 10px;
+  max-width: 100px;
 }
 
-.tooltip .tooltip-arrow {
-  width: 0;
-  height: 0;
-  border-style: solid;
-  position: absolute;
-  margin: 5px;
-  border-color: black;
-  z-index: 1;
+.spaced-out {
+  margin: 10px;
 }
 
-.tooltip[x-placement^="top"] {
-  margin-bottom: 5px;
-}
+$--circular-progress-int-fz: 28px !default;
+$--circular-progress-dec-fz: 12px !default;
 
-.tooltip[x-placement^="top"] .tooltip-arrow {
-  border-width: 5px 5px 0 5px;
-  border-left-color: transparent !important;
-  border-right-color: transparent !important;
-  border-bottom-color: transparent !important;
-  bottom: -5px;
-  left: calc(50% - 5px);
-  margin-top: 0;
-  margin-bottom: 0;
-}
+.vue-circular-progress {
+  display: inline-block;
+  .circle {
+    position: relative;
+  }
 
-.tooltip[x-placement^="bottom"] {
-  margin-top: 5px;
-}
+  .circle__svg {
+    transform: rotate(-90deg);
+  }
 
-.tooltip[x-placement^="bottom"] .tooltip-arrow {
-  border-width: 0 5px 5px 5px;
-  border-left-color: transparent !important;
-  border-right-color: transparent !important;
-  border-top-color: transparent !important;
-  top: -5px;
-  left: calc(50% - 5px);
-  margin-top: 0;
-  margin-bottom: 0;
-}
+  .circle__progress {
+    fill: none;
+    stroke-opacity: 0.3;
+    stroke-linecap: round;
+  }
 
-.tooltip[x-placement^="right"] {
-  margin-left: 5px;
-}
+  .circle__progress--fill {
+    --initialStroke: 0;
+    --transitionDuration: 0;
+    stroke-opacity: 1;
+    stroke-dasharray: var(--initialStroke);
+    stroke-dashoffset: var(--initialStroke);
+    transition: stroke-dashoffset var(--transitionDuration) ease;
+  }
 
-.tooltip[x-placement^="right"] .tooltip-arrow {
-  border-width: 5px 5px 5px 0;
-  border-left-color: transparent !important;
-  border-top-color: transparent !important;
-  border-bottom-color: transparent !important;
-  left: -5px;
-  top: calc(50% - 5px);
-  margin-left: 0;
-  margin-right: 0;
-}
+  .percent {
+    width: 100%;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    font-weight: bold;
+    text-align: center;
+    line-height: $--circular-progress-int-fz;
+    transform: translate(-50%, -50%);
+  }
 
-.tooltip[x-placement^="left"] {
-  margin-right: 5px;
-}
+  .percent__int {
+    font-size: $--circular-progress-int-fz;
+  }
+  .percent__dec,
+  .percent_sign {
+    font-size: $--circular-progress-dec-fz;
+  }
 
-.tooltip[x-placement^="left"] .tooltip-arrow {
-  border-width: 5px 0 5px 5px;
-  border-top-color: transparent !important;
-  border-right-color: transparent !important;
-  border-bottom-color: transparent !important;
-  right: -5px;
-  top: calc(50% - 5px);
-  margin-left: 0;
-  margin-right: 0;
-}
-
-.tooltip.popover .popover-inner {
-  background: #f9f9f9;
-  color: black;
-  padding: 24px;
-  border-radius: 5px;
-  box-shadow: 0 5px 30px rgba(black, .1);
-}
-
-.tooltip.popover .popover-arrow {
-  border-color: #f9f9f9;
-}
-
-.tooltip[aria-hidden='true'] {
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity .15s, visibility .15s;
-}
-
-.tooltip[aria-hidden='false'] {
-  visibility: visible;
-  opacity: 1;
-  transition: opacity .15s;
+  .label {
+    font-size: 14px;
+    text-transform: uppercase;
+    margin-top: 15px;
+  }
 }
 </style>

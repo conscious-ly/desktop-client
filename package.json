@@ -1,5 +1,5 @@
 {
-  "name": "consciously-desktop-client",
+  "name": "Conscious.ly",
   "description": "The desktop client for the consciously app, and app that aims to cut down harmful tech usage and bring human consciousness back front and centre. Still a work in progress, basically pre-pre-alpha",
   "author": {
     "name": "Amir Abushanab"
@@ -36,9 +36,10 @@
     "auto-launch": "^5.0.5",
     "chokidar": "^3.2.2",
     "core-js": "^3.3.2",
-    "electron": "^6.0.0",
+    "easy-circular-progress": "^1.0.4",
+    "electron-log": "^3.0.9",
     "electron-updater": "^4.2.0",
-    "v-tooltip": "^2.0.2",
+    "lottie-web": "^5.5.9",
     "vue": "^2.6.10",
     "vue-circle-slider": "^1.0.2",
     "vue-cli-plugin-electron-builder": "^1.4.0",
@@ -58,6 +59,7 @@
     "@vue/eslint-config-airbnb": "^4.0.0",
     "@vue/test-utils": "1.0.0-beta.29",
     "babel-eslint": "^10.0.3",
+    "electron": "^7.0.0",
     "electron-icon-builder": "^1.0.1",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",

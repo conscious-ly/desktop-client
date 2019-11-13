@@ -4,11 +4,11 @@ import {
 } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
+import * as AutoLaunch from 'auto-launch';
 import * as chokidar from 'chokidar';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import * as AutoLaunch from 'auto-launch';
 import { SIGTERM } from 'constants';
 import { RESET_STATE, UPDATE_CURRENT_TABS } from './store/action-types';
 import {
@@ -26,6 +26,8 @@ import {
   SECOND_INSTANCE,
   WIDGET_MODE,
   WINDOW_ALL_CLOSED,
+  NOTIFICATION_TRAY_ICON,
+  NORMAL_TRAY_ICON,
 } from './event-types';
 import {
   OS_MAC,
@@ -35,6 +37,8 @@ import {
 import store from './store';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
+// Change this to true load Vuex and other devtools
+const enableDevtools = false;
 
 const appLauncher = new AutoLaunch({
   name: 'Conscious.ly',
@@ -81,7 +85,7 @@ const isQuitting = false;
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    alwaysOnTop: true,
+    alwaysOnTop: !isDevelopment,
     acceptFirstMouse: true,
     center: true,
     darkTheme: true,
@@ -89,7 +93,6 @@ function createWindow() {
     height: 728,
     icon: path.join(__static, 'icon.png'),
     title: 'Conscious.ly',
-    transparent: false,
     useContentSize: true,
     width: 1024,
     webPreferences: {
@@ -100,7 +103,7 @@ function createWindow() {
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     mainWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-    if (!process.env.IS_TEST) mainWindow.webContents.openDevTools({ activate: false });
+    if (enableDevtools) mainWindow.webContents.openDevTools({ activate: false });
   } else {
     createProtocol('app');
     // Load the index.html when not in development
@@ -108,19 +111,22 @@ function createWindow() {
     autoUpdater.checkForUpdatesAndNotify();
   }
 
-  appLauncher.enable();
+  // Enable auto-launcher if not in development mode
+  if (!isDevelopment) {
+    appLauncher.enable();
 
-  appLauncher.isEnabled()
-    .then((isEnabled) => {
-      if (isEnabled) {
-        return;
-      }
-      appLauncher.enable();
-    })
-    // eslint-disable-next-line no-unused-vars
-    .catch((err) => {
-      // handle error
-    });
+    appLauncher.isEnabled()
+      .then((isEnabled) => {
+        if (isEnabled) {
+          return;
+        }
+        appLauncher.enable();
+      })
+      // eslint-disable-next-line no-unused-vars
+      .catch((err) => {
+        // handle error
+      });
+  }
 
   // Prevent flash on startup when in dark-mode
   mainWindow.webContents.on(DID_FINISH_LOAD, () => {
@@ -148,14 +154,18 @@ function createWindow() {
   store.dispatch(RESET_STATE);
 }
 
+// Makes it so that only a single instance of consciously can run at a time
 const gotTheLock = app.requestSingleInstanceLock();
 
 if (!gotTheLock) {
   app.quit();
 } else {
+  // Protocol must be registered - standard electron boilerlplate
+  protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
+
   // eslint-disable-next-line no-unused-vars
   app.on(SECOND_INSTANCE, (event, commandLine, workingDirectory) => {
-    // Someone tried to run a second instance, we should focus our window.
+  // Someone tried to run a second instance, we should focus our window.
     if (mainWindow) {
       if (mainWindow.isMinimized()) {
         mainWindow.restore();
@@ -163,9 +173,6 @@ if (!gotTheLock) {
       mainWindow.focus();
     }
   });
-
-  // Scheme must be registered before the app is ready
-  protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
 
   // Quit when all windows are closed.
   app.on(WINDOW_ALL_CLOSED, () => {
@@ -188,7 +195,7 @@ if (!gotTheLock) {
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
   app.on(READY, async () => {
-    if (isDevelopment && !process.env.IS_TEST) {
+    if (isDevelopment && enableDevtools) {
       // Install Vue Devtools
       // Devtools extensions are broken in Electron 6.0.0 and greater
       // See https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/378 for more info
@@ -225,9 +232,19 @@ if (!gotTheLock) {
   });
 
   // eslint-disable-next-line no-unused-vars
+  ipcMain.on(NOTIFICATION_TRAY_ICON, (event, args) => {
+    mainWindow.setIcon(path.join(__static, 'logo-red.png'));
+  });
+
+  // eslint-disable-next-line no-unused-vars
+  ipcMain.on(NORMAL_TRAY_ICON, (event, args) => {
+    mainWindow.setIcon(path.join(__static, 'icon.png'));
+  });
+
+  // eslint-disable-next-line no-unused-vars
   ipcMain.on(WIDGET_MODE, (event, args) => {
     mainWindow.setBounds({
-      x: 0, y: 0, width: 200, height: 200,
+      x: 0, y: 0, width: 300, height: 300,
     }, true);
   });
 
