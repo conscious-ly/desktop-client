@@ -9,7 +9,9 @@
 
 ## Overview
 
-Conscious.ly is a companion app that will help you achieve what
+Conscious.ly is a companion app that will empower you cultivate your conscious thought and avoid getting into "automatic mode"
+
+The approach is similar to that used in CBT - i.e set yourself time constrained goal and have someone remind you and hold you
 
 Consciously is still in its early stages, so feedback and contributions are welcome and appreciated! :seedling:
 
@@ -21,22 +23,22 @@ Consciously is still in its early stages, so feedback and contributions are welc
 
 ## Roadmap
 
-:memo: Future plans for enhancements and development:
+Future plans for enhancements and development :memo: :
 
 - Move over to Typescript React - vue-electron is not as well supported
+- More thoroughly test the syncing
+- Add various quality-of-life improvements to make using the app as seamless as possible
 
 ## Technical
 
 Conscious.ly is built with [Vue.js](https://github.com/vuejs/vue), [Electron](https://github.com/electron/electron), and [electron-vue](https://github.com/SimulatedGREG/electron-vue).
 
-### Build Setup
+## Running the App
 
 #### Prerequisites
 
 - [node](https://nodejs.org)
 - [yarn](https://yarnpkg.com)
-
-#### Running the app
 
 Clone this repository, `cd` into the cloned folder and run the following commands:
 
