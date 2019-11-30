@@ -14,6 +14,8 @@ export const SET_DISTRACTED = 'SET_DISTRACTED';
 
 export const SET_EXPECTED_TIME = 'SET_EXPECTED_TIME';
 
+export const SET_FIRST_OPEN = 'SET_FIRST_OPEN';
+
 export const SET_FRESH_STATE = 'SET_FRESH_STATE';
 
 export const SET_IS_MOVEABLE = 'SET_IS_MOVEABLE';

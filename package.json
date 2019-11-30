@@ -1,6 +1,6 @@
 {
   "name": "Conscious.ly",
-  "description": "The desktop client for the consciously app, and app that aims to cut down harmful tech usage and bring human consciousness back front and centre. Still a work in progress, basically pre-pre-alpha",
+  "description": "The desktop client for the consciously app, and app that aims to cut down harmful tech usage and bring human consciousness back front and centre. Still a work in progress",
   "author": {
     "name": "Amir Abushanab"
   },
@@ -11,7 +11,7 @@
       "url": "https://github.com/amir-abushanab"
     }
   ],
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -34,6 +34,7 @@
     "@fortawesome/vue-fontawesome": "^0.1.7",
     "@innologica/vue-dropdown-menu": "^0.1.3",
     "auto-launch": "^5.0.5",
+    "axios": "^0.18.0",
     "chokidar": "^3.2.2",
     "core-js": "^3.3.2",
     "easy-circular-progress": "^1.0.4",

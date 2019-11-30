@@ -38,7 +38,7 @@ import store from './store';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 // Change this to true load Vuex and other devtools
-const enableDevtools = false;
+const enableDevtools = true;
 
 const appLauncher = new AutoLaunch({
   name: 'Conscious.ly',

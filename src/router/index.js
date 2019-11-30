@@ -7,6 +7,10 @@ import {
   SETTINGS_PAGE_ROUTE,
   TIME_UP_PAGE_ROUTE,
   WIDGET_PAGE_ROUTE,
+  TUTORIAL_PAGE_ONE_ROUTE,
+  TUTORIAL_PAGE_TWO_ROUTE,
+  TUTORIAL_PAGE_THREE_ROUTE,
+  TUTORIAL_PAGE_FOUR_ROUTE,
 } from './routes';
 import Home from '@/views/Home.vue';
 
@@ -42,6 +46,26 @@ const routes = [
     path: TIME_UP_PAGE_ROUTE,
     name: TIME_UP_PAGE_ROUTE.substring(1),
     component: () => import('@/views/TimeUp'),
+  },
+  {
+    path: TUTORIAL_PAGE_ONE_ROUTE,
+    name: TUTORIAL_PAGE_ONE_ROUTE.substring(1),
+    component: () => import('@/views/tutorial/TutorialOne'),
+  },
+  {
+    path: TUTORIAL_PAGE_TWO_ROUTE,
+    name: TUTORIAL_PAGE_TWO_ROUTE.substring(1),
+    component: () => import('@/views/tutorial/TutorialTwo'),
+  },
+  {
+    path: TUTORIAL_PAGE_THREE_ROUTE,
+    name: TUTORIAL_PAGE_THREE_ROUTE.substring(1),
+    component: () => import('@/views/tutorial/TutorialThree'),
+  },
+  {
+    path: TUTORIAL_PAGE_FOUR_ROUTE,
+    name: TUTORIAL_PAGE_FOUR_ROUTE.substring(1),
+    component: () => import('@/views/tutorial/TutorialFour'),
   },
   {
     path: WIDGET_PAGE_ROUTE,

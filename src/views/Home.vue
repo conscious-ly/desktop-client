@@ -42,12 +42,36 @@
 <script>
 import { mapActions } from 'vuex';
 import { remote } from 'electron';
+import client from '@/client';
 import { START_TIMER, UPDATE_TASK } from '@/store/action-types';
 import { WIDGET_PAGE_ROUTE } from '@/router/routes';
 import navigationMixin from '@/mixins/navigationMixin';
 
+
 export default {
   name: 'HomeView',
+  async created() {
+    if (this.$store.state.firstTimeOpeningApp) {
+      this.goToTutorial();
+    }
+
+    /* Code for syncing with mobile app */
+    /* eslint-disable no-undef */
+    const response = await client.checkStatus();
+    console.log(response.data);
+    if (response.data) {
+      if (data.status === true) {
+        this.$store.dispatch(UPDATE_TASK,
+          {
+            id: Math.random().toString(),
+            name: data.current_task,
+            expectedTimeInMin: data.time / 60000,
+          });
+        this.$store.dispatch(START_TIMER, data.time / 60000);
+        this.$router.push(WIDGET_PAGE_ROUTE);
+      }
+    }
+  },
   data() {
     return {
       expectedTime: 0,
@@ -73,7 +97,10 @@ export default {
       this.$store.dispatch(START_TIMER, this.$data.expectedTime);
       this.$router.push(WIDGET_PAGE_ROUTE);
     },
-    // test() {},
+    // async test() {
+    // const response = await client.checkStatus();
+    // console.log(response.data.status);
+    // },
     // navigate(event) {
     //   if (event.keyCode === 38) {
     //     this.$router.push('/time-up-page');

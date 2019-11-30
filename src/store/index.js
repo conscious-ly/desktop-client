@@ -19,8 +19,10 @@ import {
   SET_OPEN_TABS,
   SET_TASK,
   SET_TIME_REMAINING,
+  SET_FIRST_OPEN,
 } from './mutation-types';
 import {
+  COMPLETE_TUTORIAL,
   ENTER_DISTRACTED_MODE,
   NOTIFY_HALF_TIME,
   NOTIFY_TIME_UP,
@@ -54,6 +56,7 @@ const state = {
     expectedTimeInMin: 0,
   },
   distractedMode: false,
+  firstTimeOpeningApp: true,
   halfTimeNotifcationSent: false,
   isMoveable: false,
   minutesRemainingInTask: 0,
@@ -159,6 +162,9 @@ const mutations = {
       },
     ];
   },
+  [SET_FIRST_OPEN](state, firstTimeOpeningApp) {
+    state.firstTimeOpeningApp = firstTimeOpeningApp;
+  },
   [SET_IS_MOVEABLE](state, isMoveable) {
     state.isMoveable = isMoveable;
   },
@@ -177,6 +183,10 @@ const mutations = {
 };
 
 const actions = {
+  [COMPLETE_TUTORIAL]({ commit, dispatch, state }) {
+    commit(SET_FIRST_OPEN, false);
+    dispatch(START_TIMER, state.minutesRemainingInTask);
+  },
   [ENTER_DISTRACTED_MODE]({ commit }) {
     commit(SET_DISTRACTED, true);
   },
@@ -212,7 +222,7 @@ const actions = {
     while (state.minutesRemainingInTask !== 0) {
       // Change the sleep-time to make the timer tick faster
       // recommended is 500 for testing, 60000 (i.e a minute) for production
-      const delay = speedUpTimer ? 500 : 60000;
+      const delay = speedUpTimer ? 60000 : 60000;
       // eslint-disable-next-line no-await-in-loop
       await sleep(delay);
       commit(DECREMENT_TIMER);
